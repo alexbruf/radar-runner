@@ -2,18 +2,13 @@
 
 A physics-based side-scrolling game where you roll a bird over procedurally generated hills, racing against nightfall. Plays in the **browser** and the **terminal**.
 
+**[Play in browser](https://alexbruf.github.io/radar-runner/)** | [Download TUI binary](../../releases)
+
 Both versions share the same [Planck.js](https://github.com/piqnt/planck.js) (Box2D) physics engine, seeded terrain generation, and game mechanics.
 
-```
-                      ⣶⣶⣶⣤⣤⣤⣤⣄⣀
-                                 ⣦⣀                              ⢀⣠⣶
-                                    ⣦⣄                         ⢀⣤⣾
-                              ⣿        ⣦⡀                    ⣠⣶
-                                         ⣶⣄              ⢀⣴⣾
-                                            ⣦⣀         ⢀⣠⣾
-                                               ⣦⣀   ⢀⣠⣶
-                                                  ⣶⣤⣤⣴⣾
-```
+### Terminal Version
+
+![TUI Screenshot](assets/tui-screenshot.png)
 
 ## How to Play
 
@@ -70,7 +65,7 @@ chmod +x radar-runner-linux-x64
 ./radar-runner-linux-x64
 ```
 
-### Features
+### TUI Features
 
 - **Planck.js physics** — identical Box2D simulation to the browser version
 - **Braille rendering** — 4x vertical, 2x horizontal sub-cell resolution
@@ -85,6 +80,8 @@ chmod +x radar-runner-linux-x64
 ## Browser Version
 
 React + Canvas 2D with full visual effects — glow, particles, rotation, speed arcs, smooth gradients.
+
+**[Play now](https://alexbruf.github.io/radar-runner/)**
 
 ```sh
 bun dev      # dev server at localhost:5173
