@@ -7,7 +7,9 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "tui": "bun tui.ts",
+    "build:tui": "bun build --compile --minify tui.ts --outfile radar-runner"
   },
   "dependencies": {
     "planck": "^1.4.3",
@@ -15,6 +17,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",

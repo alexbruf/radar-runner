@@ -1,0 +1,90 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: bun-linux-x64
+            artifact: radar-runner-linux-x64
+          - os: ubuntu-latest
+            target: bun-linux-arm64
+            artifact: radar-runner-linux-arm64
+          - os: macos-latest
+            target: bun-darwin-x64
+            artifact: radar-runner-darwin-x64
+          - os: macos-latest
+            target: bun-darwin-arm64
+            artifact: radar-runner-darwin-arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Build binary
+        run: bun build --compile --minify --target=${{ matrix.target }} tui.ts --outfile ${{ matrix.artifact }}
+
+      # UPX compression on Linux (shrinks ~57MB → ~22MB). Not supported on macOS.
+      - name: Compress with UPX (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y upx-ucl
+          upx --best ${{ matrix.artifact }} || true
+
+      - name: Compress with gzip
+        run: gzip -k ${{ matrix.artifact }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.artifact }}
+            ${{ matrix.artifact }}.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Make binaries executable
+        run: chmod +x artifacts/radar-runner-*[!.gz]
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
+          body: |
+            ## Radar Runner — Terminal Edition
+
+            **Linux binaries are UPX-compressed (~22MB). macOS binaries have .gz variants (~21MB).**
+
+            ```sh
+            # Download, decompress if .gz, make executable, run:
+            chmod +x radar-runner-*
+            ./radar-runner-darwin-arm64
+
+            # Or run from source (any platform with Bun):
+            bun tui.ts
+            ```
+
+            **Controls:** Click to dive, release to fly. `P` pause, `T` theme, `Q` quit.
