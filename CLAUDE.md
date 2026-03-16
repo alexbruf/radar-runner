@@ -1,41 +1,61 @@
 # Radar Runner
 
-Standalone game — browser (React + Canvas 2D) and terminal (TUI) versions sharing the same Planck.js physics.
+Web component game (`<radar-runner>`) — browser and terminal versions sharing the same Planck.js physics.
 
 ## Structure
 
-### Browser version
-- `src/components/RadarRunner.tsx` — full game in one component (physics, rendering, input, UI)
-- `src/App.tsx` — wrapper with dark/light theme toggle
-- `src/main.tsx` — React entry point
+### Web component (npm package)
+- `src/main.ts` — library entry, exports `RadarRunnerShell`
+- `src/radar-runner-shell.ts` — thin web component shell (loading screen, theming, sizing, collapsed mode, slots)
+- `src/radar-runner-game.ts` — heavy game module: Planck.js physics, terrain generation, Canvas 2D rendering (lazy-loaded)
+- `src/react.ts` — React wrapper component
+- `src/preact.ts` — Preact wrapper component
+- `src/vue.ts` — Vue wrapper component
+- `src/demo.ts` — demo site entry point (side-effectful import)
 
 ### TUI version
-- `tui.ts` — standalone terminal game using terminal-kit + Planck.js + braille rendering
+- `tui.ts` — standalone terminal game using Planck.js + braille rendering
+
+### Build configs
+- `vite.config.ts` — library build (multi-entry: main + react + preact + vue → `dist/`)
+- `vite.config.demo.ts` — demo site build (HTML + assets → `demo-dist/`)
+- `tsconfig.json` — base TypeScript config
+- `tsconfig.build.json` — declaration generation for npm types
 
 ### CI/CD
-- `.github/workflows/release.yml` — builds cross-platform binaries on tag push
+- `.github/workflows/npm-publish.yml` — publishes to npm on `v*` tag
+- `.github/workflows/pages.yml` — deploys demo site to GitHub Pages on push to main
+- `.github/workflows/release.yml` — builds cross-platform TUI binaries on `v*` tag
 
 ## Commands
 
-- `bun run dev` — browser version (Vite dev server)
-- `bun run tui` — TUI version (runs directly)
-- `bun run build:tui` — compile TUI to standalone binary (`radar-runner`)
-- `bun run build` — build browser version (Vite)
+- `bun dev` — demo site (Vite dev server)
+- `bun run build` — library build → `dist/` (for npm)
+- `bun run build:demo` — demo site → `demo-dist/` (for GitHub Pages)
+- `bun run typecheck` — type checking
+- `bun run tui` — TUI version
+- `bun run build:tui` — compile TUI to standalone binary
 
 ## Key details
 
-- Same Planck.js (Box2D) physics in both versions — identical terrain, gravity, fever, night chaser
-- Terrain is procedurally generated from a seeded RNG (mulberry32)
-- No game assets — everything drawn via Canvas 2D (browser) or Unicode braille chars (TUI)
-- TUI uses braille characters (U+2800-U+28FF) for 4× vertical resolution terrain rendering
-- Camera zoom scales pixels-per-cell dynamically based on altitude
-- Dark/light theme auto-detected from terminal, toggled with `T` key
+- Web component: `<radar-runner>` with shadow DOM, lazy-loaded game chunk
+- Two build outputs: library (`dist/`) and demo site (`demo-dist/`)
+- Shell is ~3KB gzip, game chunk is ~55KB gzip (includes Planck.js)
+- Game chunk only loads when component is visible (or on first expand in collapsed mode)
+- Framework wrappers (react/preact/vue) are thin createElement wrappers, <1KB each
+- Theme follows `prefers-color-scheme` by default, overridable via `color-mode` attribute
+- Sizing: `width`/`height` attrs or auto-fill container (8:5 aspect ratio)
+- Collapsed mode uses named slots (`open`/`close`) for custom button content
+- `::part(toggle)` and CSS custom properties for button styling
 
 ## Releasing
 
-Push a version tag to trigger CI/CD:
 ```
-git tag v1.0.0
-git push origin v1.0.0
+npm version patch   # bumps version in package.json
+git push && git push --tags
 ```
-GitHub Actions builds binaries for Linux x64/ARM64 and macOS x64/ARM64, attaches them to a GitHub Release.
+
+This triggers:
+- npm publish via `npm-publish.yml`
+- TUI binary builds via `release.yml`
+- Demo deploy happens on push to main via `pages.yml`

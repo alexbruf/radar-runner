@@ -1,10 +1,12 @@
 node_modules/
 dist/
+demo-dist/
 .env
 .env.*
 .DS_Store
 *.local
 .claude/
 bun.lock
-radar-runner
-radar-runner-*
+# TUI compiled binaries (root level only)
+/radar-runner
+/radar-runner-*

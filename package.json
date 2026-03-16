@@ -1,30 +1,78 @@
 {
-  "name": "radar-runner",
-  "version": "1.0.0",
-  "private": true,
+  "name": "@alexbruf/radar-runner",
+  "version": "1.1.0",
   "type": "module",
+  "description": "A gravity-based flight game web component — dive into slopes, soar off hilltops, outrun the night",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexbruf/radar-runner"
+  },
+  "main": "./dist/radar-runner.js",
+  "module": "./dist/radar-runner.js",
+  "types": "./dist/types/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/main.d.ts",
+      "import": "./dist/radar-runner.js"
+    },
+    "./react": {
+      "types": "./dist/types/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./preact": {
+      "types": "./dist/types/preact.d.ts",
+      "import": "./dist/preact.js"
+    },
+    "./vue": {
+      "types": "./dist/types/vue.d.ts",
+      "import": "./dist/vue.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "./dist/radar-runner.js",
+    "./src/radar-runner-shell.ts",
+    "./src/demo.ts",
+    "./src/main.ts"
+  ],
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "vite dev --config vite.config.demo.ts",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "build:demo": "vite build --config vite.config.demo.ts",
+    "preview": "vite preview --config vite.config.demo.ts",
     "typecheck": "tsc --noEmit",
     "tui": "bun tui.ts",
-    "build:tui": "bun build --compile --minify tui.ts --outfile radar-runner"
+    "build:tui": "bun build --compile --minify tui.ts --outfile radar-runner",
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "planck": "^1.4.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "planck": "^1.4.3"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
     "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.3.0",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.0",
+    "preact": "^10.25.0",
     "typescript": "^5.7.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "preact": ">=10",
+    "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "preact": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
   }
 }

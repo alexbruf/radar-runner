@@ -15,9 +15,103 @@
         document.documentElement.classList.add('dark');
     })();
   </script>
+  <style>
+    :root { --orange: #fd5200; --dark: #292929; --light: #f5f5f0; }
+    html { background-color: var(--light); }
+    .dark html, html.dark { background-color: var(--dark); }
+    body {
+      font-family: "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+      margin: 0; padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      transition: background 0.2s;
+    }
+    html:not(.dark) .page { background: #f5f5f0; }
+    html.dark .page { background: #292929; }
+    .title { text-align: center; margin-bottom: 24px; }
+    .title h1 {
+      font-size: 1.875rem; font-weight: 600; letter-spacing: -0.025em; margin: 0 0 4px 0;
+    }
+    html:not(.dark) .title h1 { color: rgba(0,0,0,0.8); }
+    html.dark .title h1 { color: rgba(255,255,255,0.87); }
+    .title p { font-size: 0.875rem; margin: 0; }
+    html:not(.dark) .title p { color: rgba(0,0,0,0.4); }
+    html.dark .title p { color: rgba(255,255,255,0.4); }
+    .theme-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 100;
+    }
+    html:not(.dark) .theme-btn {
+      background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.08);
+    }
+    html.dark .theme-btn {
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1);
+    }
+    .demo-game {
+      --rr-toggle-radius: 8px;
+      --rr-toggle-padding: 10px 24px;
+      text-align: center;
+    }
+    .demo-game svg.icon { width: 18px; height: 18px; vertical-align: -3px; }
+  </style>
 </head>
 <body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
+  <div class="page">
+    <div class="title">
+      <h1>Radar Runner</h1>
+      <p>Dive into slopes, soar off hilltops, outrun the night.</p>
+    </div>
+
+    <radar-runner class="demo-game" collapsed width="640">
+      <span slot="open">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M5 3l14 9-14 9V3z" fill="currentColor"/></svg>
+        Play Radar Runner
+      </span>
+      <span slot="close">
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Hide game
+      </span>
+    </radar-runner>
+  </div>
+
+  <button class="theme-btn" id="theme-toggle">Light mode</button>
+
+  <script type="module" src="/src/demo.ts"></script>
+  <script>
+    (function() {
+      var isDark = document.documentElement.classList.contains('dark');
+      var btn = document.getElementById('theme-toggle');
+      var runner = document.querySelector('radar-runner');
+      function apply() {
+        btn.textContent = isDark ? 'Light mode' : 'Dark mode';
+        runner.setAttribute('color-mode', isDark ? 'dark' : 'light');
+      }
+      if (localStorage.getItem('theme')) apply();
+      else btn.textContent = isDark ? 'Light mode' : 'Dark mode';
+      btn.addEventListener('click', function() {
+        isDark = !isDark;
+        document.documentElement.classList.toggle('dark', isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        apply();
+      });
+    })();
+  </script>
 </body>
 </html>

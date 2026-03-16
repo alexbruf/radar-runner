@@ -1,126 +1,189 @@
 # Radar Runner
 
-A physics-based side-scrolling game where you roll a bird over procedurally generated hills, racing against nightfall. Plays in the **browser** and the **terminal**.
+A gravity-based flight game as a **web component** — drop it into any page with zero framework dependencies.
 
-**[Play in browser](https://alexbruf.github.io/radar-runner/)** | [Download TUI binary](../../releases)
+**[Play demo](https://alexbruf.github.io/radar-runner/)** | [npm](https://www.npmjs.com/package/@alexbruf/radar-runner)
 
-Both versions share the same [Planck.js](https://github.com/piqnt/planck.js) (Box2D) physics engine, seeded terrain generation, and game mechanics.
-
-### Terminal Version
-
-![TUI Screenshot](assets/tui-screenshot.png)
-
-## How to Play
-
-You're a bird rolling over hills. **Hold** to dive heavy into downslopes to build speed. **Release** to float light off hilltops and soar. Fly as far as you can before nightfall catches you from behind.
-
-Land 5 perfect dives in a row to trigger **Fever Mode** — a massive speed boost that rockets you into the sky.
-
-## Quick Start
+## Install
 
 ```sh
-# Requires Bun — https://bun.sh
-bun install
+bun add @alexbruf/radar-runner    # or npm install @alexbruf/radar-runner
+```
 
-# Terminal version
+Or load from a CDN:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/@alexbruf/radar-runner/dist/radar-runner.js"></script>
+```
+
+## Usage
+
+```html
+<!-- That's it -->
+<radar-runner></radar-runner>
+```
+
+### Sizing
+
+```html
+<radar-runner width="800"></radar-runner>   <!-- explicit width, height auto (8:5 ratio) -->
+<radar-runner height="300"></radar-runner>  <!-- explicit height, width auto -->
+<radar-runner></radar-runner>              <!-- fills container, max 640px -->
+```
+
+### Theme
+
+Follows `prefers-color-scheme` by default. Override with `color-mode`:
+
+```html
+<radar-runner color-mode="dark"></radar-runner>
+<radar-runner color-mode="light"></radar-runner>
+```
+
+### Collapsed / accordion mode
+
+Starts as a button. Game loads on first click — zero bytes downloaded until the user engages.
+
+```html
+<radar-runner collapsed></radar-runner>
+```
+
+Customize the open/close button content with named slots:
+
+```html
+<radar-runner collapsed>
+  <span slot="open">Play a game</span>
+  <span slot="close">Hide game</span>
+</radar-runner>
+```
+
+Put whatever you want in the slots — SVGs, images, styled text:
+
+```html
+<radar-runner collapsed>
+  <span slot="open">
+    <svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z" fill="currentColor"/></svg>
+    Play while you wait
+  </span>
+  <span slot="close">Close</span>
+</radar-runner>
+```
+
+Default fallbacks are provided if no slots are used.
+
+### Styling the toggle button
+
+CSS custom properties:
+
+```css
+radar-runner {
+  --rr-toggle-bg: #1a1a2e;
+  --rr-toggle-color: #e94560;
+  --rr-toggle-border: 1px solid #e94560;
+  --rr-toggle-font: 600 16px Inter, sans-serif;
+  --rr-toggle-radius: 12px;
+  --rr-toggle-padding: 12px 32px;
+}
+```
+
+Or use `::part(toggle)` for full CSS access:
+
+```css
+radar-runner::part(toggle) {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+```
+
+### Styling the in-game buttons
+
+```css
+radar-runner {
+  --rr-btn-padding: 8px;
+  --rr-btn-radius: 8px;
+  --rr-btn-icon-size: 22;
+}
+```
+
+Or via `::part()`:
+
+```css
+radar-runner::part(btn-help),
+radar-runner::part(btn-pause),
+radar-runner::part(btn-reset) {
+  padding: 8px;
+}
+```
+
+## Framework wrappers
+
+### React
+
+```tsx
+import { RadarRunner } from '@alexbruf/radar-runner/react';
+
+<RadarRunner width={640} colorMode="dark" collapsed>
+  <span slot="open">Play!</span>
+</RadarRunner>
+```
+
+### Preact
+
+```tsx
+import { RadarRunner } from '@alexbruf/radar-runner/preact';
+
+<RadarRunner width={640} collapsed />
+```
+
+### Vue
+
+```vue
+<script setup>
+import { RadarRunner } from '@alexbruf/radar-runner/vue';
+</script>
+
+<template>
+  <RadarRunner :width="640" :collapsed="true">
+    <template #open>Play!</template>
+    <template #close>Hide</template>
+  </RadarRunner>
+</template>
+```
+
+## How to play
+
+**Hold** (click, tap, or Space) to dive heavy into slopes. **Release** to float light and soar off hilltops. Fly as far as you can before nightfall catches you.
+
+Land 5 perfect dives in a row to trigger **Fever Mode**.
+
+## Architecture
+
+The package ships as two chunks:
+
+| File | Size (gzip) | Contents |
+|------|------------|----------|
+| `radar-runner.js` | ~3 KB | Web component shell, loading screen, theme, sizing |
+| `radar-runner-game.js` | ~55 KB | Planck.js physics engine + game logic (lazy-loaded) |
+
+The game chunk only loads when the component is visible (or on first expand in collapsed mode). Framework wrappers are <1 KB each.
+
+## Terminal version (TUI)
+
+There's also a standalone terminal version using Unicode braille rendering. See [Releases](../../releases) for prebuilt binaries, or run from source:
+
+```sh
 bun tui.ts
-
-# Browser version
-bun dev
 ```
 
-Or download a prebuilt binary from [Releases](../../releases).
-
-## Terminal Version (TUI)
-
-Renders with Unicode braille characters for smooth terrain at 4x vertical resolution, with dynamic camera zoom, parallax backgrounds, and dark/light themes.
-
-### Controls
-
-| Input | Action |
-|-------|--------|
-| **Click & hold** | Dive (heavy gravity) |
-| **Release click** | Fly (light gravity) |
-| `SPACE` / `↓` | Dive (keyboard fallback) |
-| `↑` | Fly (keyboard) |
-| `P` / `ESC` | Pause / Resume |
-| `R` | Reset to title |
-| `T` | Toggle dark / light theme |
-| `Q` | Quit |
-
-Mouse gives instant press/release. Keyboard uses a commit window to handle terminal key-repeat delay.
-
-### Install Binary
+## Development
 
 ```sh
-# macOS Apple Silicon
-curl -LO https://github.com/alexbruf/radar-runner/releases/latest/download/radar-runner-darwin-arm64.gz
-gunzip radar-runner-darwin-arm64.gz
-chmod +x radar-runner-darwin-arm64
-./radar-runner-darwin-arm64
-
-# Linux x64
-curl -LO https://github.com/alexbruf/radar-runner/releases/latest/download/radar-runner-linux-x64
-chmod +x radar-runner-linux-x64
-./radar-runner-linux-x64
+bun install
+bun dev           # demo site at localhost:5173
+bun run build     # library → dist/
+bun run build:demo # demo site → demo-dist/
+bun run typecheck  # type checking
 ```
 
-### TUI Features
+## License
 
-- **Planck.js physics** — identical Box2D simulation to the browser version
-- **Braille rendering** — 4x vertical, 2x horizontal sub-cell resolution
-- **Dynamic camera zoom** — viewport scales with altitude, terrain always visible at bottom
-- **Parallax backgrounds** — two depth layers at different scroll speeds
-- **Sun, stars, night chaser** — celestial bodies dim as night approaches
-- **Fading trail** — dot trail behind the bird
-- **Fever mode** — screen flash, color pulse, speed boost
-- **Dark / light themes** — auto-detected from terminal environment
-- **Zero terminal dependencies** — raw ANSI + stdin, compiles to standalone binary
-
-## Browser Version
-
-React + Canvas 2D with full visual effects — glow, particles, rotation, speed arcs, smooth gradients.
-
-**[Play now](https://alexbruf.github.io/radar-runner/)**
-
-```sh
-bun dev      # dev server at localhost:5173
-bun build    # production build to dist/
-```
-
-## Game Mechanics
-
-- **Procedural terrain** — seeded RNG (mulberry32) generates 303 valleys with increasing difficulty
-- **Night chaser** — darkness approaches at 1400 px/s from behind
-- **Combo system** — land on downhill slopes while diving to build combos
-- **Fever mode** — 5 perfect landings triggers low-gravity speed boost
-- **Dynamic camera** — zooms out at altitude for dramatic soaring visuals
-- **6 color palettes** — cycle as you progress through zones
-
-## Building
-
-```sh
-bun run build         # Browser → dist/
-bun run build:tui     # TUI → standalone radar-runner binary
-```
-
-## Releasing
-
-Push a version tag to build cross-platform binaries via GitHub Actions:
-
-```sh
-git tag v1.0.0 && git push origin v1.0.0
-```
-
-Builds: Linux x64/ARM64 (UPX compressed), macOS x64/ARM64 (gzip).
-
-## Tech
-
-| | Browser | Terminal |
-|---|---|---|
-| Renderer | Canvas 2D | Raw ANSI + Unicode braille |
-| Framework | React 19 + Vite | None (zero deps beyond Planck) |
-| Physics | Planck.js | Planck.js |
-| Input | Mouse/touch/keyboard events | SGR mouse protocol + raw stdin |
-| Build | Vite | Bun `--compile` |
-| Size | ~200KB bundle | ~22MB binary (compressed) |
+MIT
