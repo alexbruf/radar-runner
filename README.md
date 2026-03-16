@@ -4,6 +4,12 @@ A gravity-based flight game as a **web component** — drop it into any page wit
 
 **[Play demo](https://alexbruf.github.io/radar-runner/)** | [npm](https://www.npmjs.com/package/@alexbruf/radar-runner)
 
+![Web version](assets/web-screenshot.png)
+
+### Terminal version
+
+![TUI version](assets/tui-screenshot.png)
+
 ## Install
 
 ```sh
