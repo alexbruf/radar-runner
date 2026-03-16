@@ -17,11 +17,11 @@
   </script>
   <style>
     :root { --orange: #fd5200; --dark: #292929; --light: #f5f5f0; }
-    html { background-color: var(--light); }
+    html { background-color: var(--light); overflow-x: hidden; }
     .dark html, html.dark { background-color: var(--dark); }
     body {
       font-family: "Noto Sans", ui-sans-serif, system-ui, sans-serif;
-      margin: 0; padding: 0;
+      margin: 0; padding: 0; overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -33,53 +33,155 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       padding: 32px 16px;
       transition: background 0.2s;
     }
     html:not(.dark) .page { background: #f5f5f0; }
     html.dark .page { background: #292929; }
-    .title { text-align: center; margin-bottom: 24px; }
-    .title h1 {
-      font-size: 1.875rem; font-weight: 600; letter-spacing: -0.025em; margin: 0 0 4px 0;
+
+    /* Hero */
+    .hero { text-align: center; margin: 64px 0 32px; }
+    .hero h1 {
+      font-size: 2rem; font-weight: 600; letter-spacing: -0.025em; margin: 0 0 6px 0;
     }
-    html:not(.dark) .title h1 { color: rgba(0,0,0,0.8); }
-    html.dark .title h1 { color: rgba(255,255,255,0.87); }
-    .title p { font-size: 0.875rem; margin: 0; }
-    html:not(.dark) .title p { color: rgba(0,0,0,0.4); }
-    html.dark .title p { color: rgba(255,255,255,0.4); }
-    .theme-btn {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      padding: 4px 12px;
-      border-radius: 4px;
-      font-size: 12px;
-      cursor: pointer;
-      z-index: 100;
+    html:not(.dark) .hero h1 { color: rgba(0,0,0,0.8); }
+    html.dark .hero h1 { color: rgba(255,255,255,0.87); }
+    .hero .tagline { font-size: 0.925rem; margin: 0 0 16px; }
+    html:not(.dark) .hero .tagline { color: rgba(0,0,0,0.45); }
+    html.dark .hero .tagline { color: rgba(255,255,255,0.45); }
+    .hero-links { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .hero-links a {
+      font-size: 0.8125rem; font-weight: 500; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
     }
-    html:not(.dark) .theme-btn {
+    html:not(.dark) .hero-links a { color: rgba(0,0,0,0.5); }
+    html.dark .hero-links a { color: rgba(255,255,255,0.5); }
+    .hero-links a:hover { text-decoration: underline; }
+    .hero-links svg { width: 16px; height: 16px; }
+
+    /* Top bar */
+    .top-bar { position: fixed; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 100; }
+    .top-btn {
+      padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;
+    }
+    html:not(.dark) .top-btn {
       background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.08);
     }
-    html.dark .theme-btn {
+    html.dark .top-btn {
       background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1);
     }
+
+    /* Game */
     .demo-game {
       --rr-toggle-radius: 8px;
       --rr-toggle-padding: 10px 24px;
       text-align: center;
+      width: 100%; max-width: 640px;
     }
     .demo-game svg.icon { width: 18px; height: 18px; vertical-align: -3px; }
+
+    /* Docs sections */
+    .docs {
+      width: 100%; max-width: 680px;
+      margin: 48px auto 64px;
+    }
+    .docs section { margin-bottom: 40px; }
+    .docs h2 {
+      font-size: 1.125rem; font-weight: 600; margin: 0 0 12px;
+      padding-bottom: 8px;
+    }
+    html:not(.dark) .docs h2 { color: rgba(0,0,0,0.75); border-bottom: 1px solid rgba(0,0,0,0.08); }
+    html.dark .docs h2 { color: rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .docs p, .docs li {
+      font-size: 0.875rem; line-height: 1.6;
+    }
+    html:not(.dark) .docs p, html:not(.dark) .docs li { color: rgba(0,0,0,0.55); }
+    html.dark .docs p, html.dark .docs li { color: rgba(255,255,255,0.55); }
+    .docs a { color: var(--orange); text-decoration: none; }
+    .docs a:hover { text-decoration: underline; }
+    .docs pre {
+      border-radius: 8px; padding: 16px; overflow-x: auto;
+      font-size: 0.8125rem; line-height: 1.5; margin: 12px 0;
+      word-break: break-all; white-space: pre-wrap;
+    }
+    html:not(.dark) .docs pre { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.7); }
+    html.dark .docs pre { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.75); }
+    .docs code:not(pre code) {
+      font-size: 0.8125rem; padding: 2px 6px; border-radius: 4px;
+    }
+    html:not(.dark) .docs code:not(pre code) { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.65); }
+    html.dark .docs code:not(pre code) { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+    .docs ul { padding-left: 20px; margin: 8px 0; }
+    .tui-card {
+      border-radius: 10px; padding: 20px; margin-top: 12px;
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    html:not(.dark) .tui-card { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.06); }
+    html.dark .tui-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+    .tui-card .tui-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+    .tui-card p { margin: 0 0 8px; }
+    .tui-card pre { margin: 8px 0 0; }
+    .size-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.8125rem; }
+    .size-table th, .size-table td { padding: 8px 12px; text-align: left; }
+    html:not(.dark) .size-table th { color: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(0,0,0,0.08); }
+    html.dark .size-table th { color: rgba(255,255,255,0.45); border-bottom: 1px solid rgba(255,255,255,0.08); }
+    html:not(.dark) .size-table td { color: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(0,0,0,0.04); }
+    html.dark .size-table td { color: rgba(255,255,255,0.55); border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+    /* Mobile rotate prompt */
+    .rotate-prompt {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 12px 20px;
+      font-size: 0.8125rem;
+      text-align: center;
+      z-index: 200;
+      transition: transform 0.3s ease;
+    }
+    html:not(.dark) .rotate-prompt {
+      background: rgba(0,0,0,0.85); color: rgba(255,255,255,0.9);
+    }
+    html.dark .rotate-prompt {
+      background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .rotate-prompt .dismiss {
+      background: none; border: none; cursor: pointer; margin-left: 12px;
+      font-size: 0.75rem; text-decoration: underline;
+    }
+    html:not(.dark) .rotate-prompt .dismiss { color: rgba(255,255,255,0.6); }
+    html.dark .rotate-prompt .dismiss { color: rgba(255,255,255,0.5); }
+    @media (max-width: 640px) and (orientation: portrait) {
+      .rotate-prompt.visible { display: block; }
+    }
   </style>
 </head>
 <body>
+  <div class="top-bar">
+    <button class="top-btn" id="theme-toggle">Light mode</button>
+  </div>
+
   <div class="page">
-    <div class="title">
+    <div class="hero">
       <h1>Radar Runner</h1>
-      <p>Dive into slopes, soar off hilltops, outrun the night.</p>
+      <p class="tagline">Dive into slopes, soar off hilltops, outrun the night.</p>
+      <div class="hero-links">
+        <a href="https://github.com/alexbruf/radar-runner" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.npmjs.com/package/@alexbruf/radar-runner" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13 13H8V5h2.5v5.5H13V3H3v10h10V0"/></svg>
+          npm
+        </a>
+        <a href="https://github.com/alexbruf/radar-runner/releases" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M8 12h8M8 16h5"/></svg>
+          Terminal (TUI)
+        </a>
+      </div>
     </div>
 
-    <radar-runner class="demo-game" collapsed width="640">
+    <radar-runner class="demo-game" collapsed>
       <span slot="open">
         <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M5 3l14 9-14 9V3z" fill="currentColor"/></svg>
         Play Radar Runner
@@ -89,9 +191,106 @@
         Hide game
       </span>
     </radar-runner>
+
+    <div class="docs">
+
+      <section>
+        <h2>How to play</h2>
+        <p><strong>Hold</strong> (click, tap, or Space) to dive heavy into slopes. <strong>Release</strong> to float light and soar off hilltops. Fly as far as you can before nightfall catches you.</p>
+        <p>Land 5 perfect dives in a row to trigger <strong>Fever Mode</strong>.</p>
+      </section>
+
+      <section>
+        <h2>Install</h2>
+        <pre><code>bun add @alexbruf/radar-runner    # or npm install</code></pre>
+        <p>Or load from a CDN — no build step needed:</p>
+        <pre><code>&lt;script type="module"
+  src="https://cdn.jsdelivr.net/npm/@alexbruf/radar-runner/dist/radar-runner.js"&gt;
+&lt;/script&gt;</code></pre>
+      </section>
+
+      <section>
+        <h2>Usage</h2>
+        <pre><code>&lt;!-- That's it --&gt;
+&lt;radar-runner&gt;&lt;/radar-runner&gt;</code></pre>
+        <p>Set an explicit size, or let it fill its container (max 640px, 8:5 aspect ratio):</p>
+        <pre><code>&lt;radar-runner width="800"&gt;&lt;/radar-runner&gt;
+&lt;radar-runner height="300"&gt;&lt;/radar-runner&gt;</code></pre>
+      </section>
+
+      <section>
+        <h2>Collapsed mode</h2>
+        <p>Add <code>collapsed</code> to start as a button. The game chunk (~55 KB) only downloads when the user clicks — zero cost until they engage.</p>
+        <pre><code>&lt;radar-runner collapsed&gt;
+  &lt;span slot="open"&gt;Play a game&lt;/span&gt;
+  &lt;span slot="close"&gt;Hide game&lt;/span&gt;
+&lt;/radar-runner&gt;</code></pre>
+      </section>
+
+      <section>
+        <h2>Theme</h2>
+        <p>Follows <code>prefers-color-scheme</code> by default. Override with:</p>
+        <pre><code>&lt;radar-runner color-mode="dark"&gt;&lt;/radar-runner&gt;
+&lt;radar-runner color-mode="light"&gt;&lt;/radar-runner&gt;</code></pre>
+      </section>
+
+      <section>
+        <h2>Framework wrappers</h2>
+        <p>Thin wrappers for React, Preact, and Vue — under 1 KB each:</p>
+        <pre><code>// React
+import { RadarRunner } from '@alexbruf/radar-runner/react';
+&lt;RadarRunner width={640} colorMode="dark" collapsed /&gt;
+
+// Preact
+import { RadarRunner } from '@alexbruf/radar-runner/preact';
+&lt;RadarRunner width={640} collapsed /&gt;
+
+// Vue
+import { RadarRunner } from '@alexbruf/radar-runner/vue';
+&lt;RadarRunner :width="640" :collapsed="true" /&gt;</code></pre>
+      </section>
+
+      <section>
+        <h2>Styling</h2>
+        <p>CSS custom properties for the toggle button:</p>
+        <pre><code>radar-runner {
+  --rr-toggle-bg: #1a1a2e;
+  --rr-toggle-color: #e94560;
+  --rr-toggle-radius: 12px;
+  --rr-toggle-padding: 12px 32px;
+}</code></pre>
+        <p>Or use <code>::part(toggle)</code> for full CSS access. In-game buttons expose <code>::part(btn-help)</code>, <code>::part(btn-pause)</code>, and <code>::part(btn-reset)</code>.</p>
+      </section>
+
+      <section>
+        <h2>Architecture</h2>
+        <table class="size-table">
+          <thead><tr><th>File</th><th>Size (gzip)</th><th>Contents</th></tr></thead>
+          <tbody>
+            <tr><td><code>radar-runner.js</code></td><td>~3 KB</td><td>Web component shell, loading, theme, sizing</td></tr>
+            <tr><td><code>radar-runner-game.js</code></td><td>~55 KB</td><td>Planck.js physics + game logic (lazy-loaded)</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Terminal version</h2>
+        <div class="tui-card">
+          <div class="tui-icon">&#x2588;&#x2580;&#x2584;</div>
+          <div>
+            <p>There's also a standalone terminal version that renders the same Planck.js physics using Unicode braille characters. Grab a prebuilt binary from <a href="https://github.com/alexbruf/radar-runner/releases">Releases</a>, or run from source:</p>
+            <pre><code>bun tui.ts</code></pre>
+          </div>
+        </div>
+      </section>
+
+    </div>
   </div>
 
-  <button class="theme-btn" id="theme-toggle">Light mode</button>
+  <div class="rotate-prompt" id="rotate-prompt">
+    &#x1F4F1; Rotate your phone to landscape for the best experience
+    <button class="dismiss" id="rotate-dismiss">dismiss</button>
+  </div>
 
   <script type="module" src="/src/demo.ts"></script>
   <script>
@@ -110,6 +309,29 @@
         document.documentElement.classList.toggle('dark', isDark);
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         apply();
+      });
+    })();
+
+    // Mobile rotate prompt
+    (function() {
+      var prompt = document.getElementById('rotate-prompt');
+      var dismiss = document.getElementById('rotate-dismiss');
+      if (sessionStorage.getItem('rotate-dismissed')) return;
+
+      function check() {
+        var isMobile = window.innerWidth <= 640;
+        var isPortrait = window.innerHeight > window.innerWidth;
+        if (isMobile && isPortrait) prompt.classList.add('visible');
+        else prompt.classList.remove('visible');
+      }
+
+      check();
+      window.addEventListener('resize', check);
+      window.addEventListener('orientationchange', function() { setTimeout(check, 200); });
+
+      dismiss.addEventListener('click', function() {
+        prompt.classList.remove('visible');
+        sessionStorage.setItem('rotate-dismissed', '1');
       });
     })();
   </script>
